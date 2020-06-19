@@ -1,10 +1,12 @@
 const express = require("express");
 const courseRoutes = require("./routes/courses");
+const instructorRoutes = require("./routes/instructors");
 
 const app = express();
 app.use(express.json());
 
 app.use("/courses", courseRoutes);
+app.use("/instructors", instructorRoutes);
 
 app.get("/", function (req, res) {
   return res.json({ success: true });

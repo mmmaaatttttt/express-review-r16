@@ -1,5 +1,6 @@
 const db = require("../db");
 
+// TODO: use async / await instead!
 class Instructor {
   static all() {
     const results = db.query(
