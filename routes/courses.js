@@ -14,6 +14,13 @@ router.get("/", async function (req, res, next) {
 });
 
 // add a course
-// router.post("/")
+router.post("/", async function (req, res, next) {
+  try {
+    const course = await Course.create(req.body);
+    return res.json({ course });
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = router;

@@ -7,6 +7,15 @@ class Course {
     );
     return results.rows;
   }
+
+  static async create({ title, description }) {
+    const results = await db.query(
+      `INSERT INTO courses (title, description) VALUES ($1, $2)
+      RETURNING id, title, description`,
+      [title, description]
+    );
+    return results.rows[0];
+  }
 }
 
 module.exports = Course;
