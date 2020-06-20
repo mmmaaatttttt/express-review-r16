@@ -13,6 +13,16 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+// get a single course
+router.get("/:id", async function (req, res, next) {
+  try {
+    const course = await Course.get(req.params.id);
+    return res.json({ course });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // add a course
 router.post("/", async function (req, res, next) {
   try {
