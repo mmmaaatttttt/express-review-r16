@@ -20,13 +20,16 @@ class Course {
 
   static async get(id) {
     const result = await db.query(
-      `SELECT c.id, c.title, c.description, i.first_name, i.last_name
+      `SELECT c.id, c.title, c.description, 
+        COALESCE(json_agg(json_build_object('firstName', i.first_name, 'lastName', i.last_name))
+          FILTER (WHERE i.first_name IS NOT NULL), '[]') AS instructors
         FROM courses c
         LEFT JOIN teaching_assignments t
           ON c.id = t.course_id
         LEFT JOIN instructors i
           ON t.instructor_id = i.id
-        WHERE c.id = $1`,
+        WHERE c.id = $1
+        GROUP BY c.id, c.title, c.description;`,
       [id]
     );
 
@@ -34,14 +37,7 @@ class Course {
       throw new ExpressError(`No course with id=${id}`, 404);
     }
 
-    const { title, description } = result.rows[0];
-    const instructors = result.rows
-      .map(row => ({
-        first_name: row.first_name,
-        last_name: row.last_name
-      }))
-      .filter(row => row.first_name && row.last_name);
-    return { id, title, description, instructors };
+    return result.rows[0];
   }
 }
 
