@@ -1,5 +1,6 @@
 const express = require("express");
 const Instructor = require("../models/Instructor");
+const { ensureValidInstructor } = require("../middleware/validation");
 
 const router = new express.Router();
 
@@ -13,7 +14,7 @@ router.get("/", function (req, res, next) {
 });
 
 // add an instructor
-router.post("/", async function (req, res, next) {
+router.post("/", ensureValidInstructor, async function (req, res, next) {
   Instructor.create(req.body)
     .then(result => res.json({ instructor: result.rows[0] }))
     .catch(err => next(err));
