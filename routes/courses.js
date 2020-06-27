@@ -1,6 +1,7 @@
 const express = require("express");
 const Course = require("../models/Course");
-const { ensureValidCourse } = require("../middleware/validation");
+const courseSchema = require("../schemas/courseSchema");
+const { checkAgainstSchema } = require("../middleware/validation");
 
 const router = new express.Router();
 
@@ -25,7 +26,7 @@ router.get("/:id", async function (req, res, next) {
 });
 
 // add a course
-router.post("/", ensureValidCourse, async function (req, res, next) {
+router.post("/", checkAgainstSchema(courseSchema), async function (req, res, next) {
   try {
     const course = await Course.create(req.body);
     return res.json({ course });
